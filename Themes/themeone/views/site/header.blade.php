@@ -1,4 +1,5 @@
  <!-- NAVIGATION -->
+  
     <nav class="navbar navbar-default pw-navbar-default navbar-fixed-top">
         <!-- /TOP BAR -->
         <div class="cs-topbar">
@@ -10,7 +11,7 @@
                 <ul class="nav navbar-nav navbar-right" style="margin-top: 5px;">
                     @if(Auth::check())
 
-                    <li><a href="{{PREFIX}}" class="cs-nav-btn visible-lg"> {{getPhrase('dashboard')}}</a></li>
+                    <li><a href="{{DASHBOARD}}" class="cs-nav-btn visible-lg"> {{getPhrase('dashboard')}}</a></li>
                     <li><a href="{{URL_USERS_LOGOUT}}" class="cs-nav-btn visible-lg"> {{getPhrase('logout')}}</a></li>
                     @else
                     <li><a href="{{URL_USERS_REGISTER}}" class="cs-nav-btn visible-lg"> {{getPhrase('create_account')}}</a></li>
@@ -36,20 +37,30 @@
                 <ul class="nav navbar-nav navbar-left navbar-main myheader">
 
                     <li {{ isActive($active_class, 'home') }} ><a href="{{ URL_HOME }}">{{getPhrase('home')}}</a></li>
+                    @if (Auth::check())
+                        <li {{ isActive($active_class, 'dashboard') }} ><a href="{{ DASHBOARD }}">{{getPhrase('dashboard')}}</a></li>
+                    @endif
+
                     <li {{ isActive($active_class, 'practice_exams') }} > <a href="{{ URL_VIEW_ALL_PRACTICE_EXAMS }}">{{getPhrase('practice_exams')}}</a></li>
+
                     <li {{ isActive($active_class, 'lms') }} ><a href="{{ URL_VIEW_ALL_LMS_CATEGORIES }}">LMS</a></li>
+
                     <li {{ isActive($active_class, 'courses') }} ><a href="{{ URL_VIEW_SITE_COURSES }}">{{getPhrase('courses')}}</a></li>
+
                     <li {{ isActive($active_class, 'pattren') }} ><a href="{{ URL_VIEW_SITE_PATTREN }}">{{getPhrase('pattern')}}</a></li>
-                    <li {{ isActive($active_class, 'pricing') }} ><a href="{{ URL_VIEW_SITE_PRICING }}">{{getPhrase('pricing')}}</a></li>
+
+                    <li {{ isActive($active_class, 'subscription_plan') }} ><a href="{{ SITE_SUBSCRIPTION_PLAN }}">{{getPhrase('subscription_plan')}}</a></li>
+
                     <li {{ isActive($active_class, 'syllabus') }} ><a href="{{ URL_VIEW_SITE_SYALLABUS }}">{{getPhrase('syllabus')}}</a></li>
-                    {{-- <li {{ isActive($active_class, 'practice_exams') }} ><a href="{{ SITE_PAGES_PRIVACY }}">{{ getPhrase('privacy_and_policy') }}</a></li>
-                    <li {{ isActive($active_class, 'practice_exams') }} ><a href="{{ SITE_PAGES_TERMS }}">{{getPhrase('terms_and_conditions')}}</a></li> --}}
+
+                   
                     <li {{ isActive($active_class, 'about-us') }} ><a href="{{ SITE_PAGES_ABOUT_US }}">{{getPhrase('about_us')}}</a></li>
-                    <li {{ isActive($active_class, 'contact-us') }} ><a href="{{ URL_SITE_CONTACTUS }}">{{getPhrase('contact_us')}}</a></li>
-                  
-                    
+
+                    <li {{ isActive($active_class, 'contact-us') }} ><a class="color" href="{{ URL_SITE_CONTACTUS }}">{{getPhrase('contact_us')}}</a></li>
+                                        
                 </ul>
             </div>
         </div>
     </nav>
+
     <!-- /NAVIGATION -->

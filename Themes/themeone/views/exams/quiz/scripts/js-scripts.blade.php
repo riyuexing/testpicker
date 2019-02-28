@@ -81,10 +81,8 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
             $scope.subjectQuestions = [];
             $scope.subject          = result.subject;
             $scope.subjectQuestions = result.questions;
- 
             $scope.contentAvailable = true;
-
-           $scope.removeDuplicates();
+            $scope.removeDuplicates();
         
             });
         }
@@ -165,7 +163,6 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
                            
                             questions:[]
                         };
-                
                 }
                 
                  res = $scope.findIndexInData($scope.savedQuestions[key].questions, 'question_id', question.id);
@@ -177,8 +174,8 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
                     
                     if(res == -1 && res1 == -1) {
                         
-                      $scope.savedQuestions[key].questions.push(record);
-                      $scope.removeFromSubjectQuestions(question);
+                    $scope.savedQuestions[key].questions.push(record);
+                    $scope.removeFromSubjectQuestions(question);
                       
                     }
                   else{
@@ -202,13 +199,9 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
                       $scope.removeFromSubjectQuestions(question);
                     }
                   else 
-                    return;
-                    
+                    return;                 
                 @endif
-
             @endif
-           
-          
            
            $scope.totalMarks = parseInt($scope.totalMarks) + parseInt(question.marks);
            //Push record to storage
@@ -231,8 +224,6 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
                         $scope.final_questions.push($scope.savedQuestions[value]);
                        
                 });
-
-
              // console.log($scope.final_questions);
          }
 
@@ -264,6 +255,7 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
           return result;
         }
 
+        
         $scope.findQuestion  = function (Array, property, question_id) {
 
           var result = -1;
@@ -275,14 +267,11 @@ app.controller('prepareQuestions', function( $scope, $http, httpPreConfig,$sce) 
                   if(value1[property] == question_id){
 
                    result=key;
-
                   }
 
               });
           });
-
           return result;
-
         }
  
         /**

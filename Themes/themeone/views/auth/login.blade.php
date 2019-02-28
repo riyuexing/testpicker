@@ -5,9 +5,6 @@
 @section('content')
 
 
-
-    
-
        <!-- Login Section -->
 
        <div  style="background-image: url({{IMAGES}}login-bg.png);background-repeat: no-repeat;background-color: #f8fafb">
@@ -16,24 +13,17 @@
 
         <div class="row cs-row" style="margin-top: 180px">
 
-        
-
             <div class="col-md-12">
 
                 <div class="cs-box-resize  login-box">
 
                  <h4 class="text-center login-head">{{getPhrase('login')}}</h4>
 
-                   
-
-                    <!-- Form Login/Register -->
+                                      <!-- Form Login/Register -->
 
                     	{!! Form::open(array('url' => URL_USERS_LOGIN, 'method' => 'POST', 'name'=>'formLanguage ', 'novalidate'=>'', 'class'=>"loginform", 'name'=>"loginForm")) !!}
 
-
-
                         @include('errors.errors')	
-
 
 
                         <div class="form-group">
@@ -154,48 +144,12 @@
 
 
 
-                             @if($rechaptcha_status == 'yes')
-
-
-
-
-
-		               
-
-
-
-				          <div class="  form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
-
-		                           
-
-
-
-		                            
-
+                  @if($rechaptcha_status == 'yes')
+				            <div class="  form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
 		                                {!! app('captcha')->display() !!}
-
-
-
-		                            
-
-
-
-                               </div>
-
-
-
-
-
-                             @endif
-
-
-
-
-
+                           </div>
+                        @endif
                         </div>
-
-
-
                       	<button type="submit" class="btn button btn-primary btn-lg" ng-disabled='!loginForm.$valid' style="margin-left: 85px;">{{getPhrase('login')}}</button>
 
 
@@ -206,73 +160,35 @@
 
 
 
-                     <div class="row">
-
-                      <div class="col-md-6" >
-
+              <div class="row">
+                  <div class="col-md-12" >
                     @if(getSetting('facebook_login', 'module'))
-
-                      <a href="{{URL_FACEBOOK_LOGIN}}" class="btn btn-primary btn-sm"><i class="fa fa-facebook"></i> {{getPhrase('facebook')}}</a>
-
+                      <a href="{{URL_FACEBOOK_LOGIN}}" class="btn btn-primary btn-block social-btn"><i class="fa fa-facebook"></i> {{getPhrase('facebook')}}</a>
                     @endif
-
-                    </div>
-
-                     <div class="col-md-6" >
-
-                    @if(getSetting('google_plus_login', 'module'))  
-
-                      <a href="{{URL_GOOGLE_LOGIN}}" class="btn btn-danger btn-sm"><i class="fa fa-google-plus"></i>  {{getPhrase('google+')}}</a>
-
-                    @endif
-
                   </div>
+              </div>
+            <br>
 
-                    
-
-                    <div class="col-md-12">
-
-                    @if(getSetting('facebook_login', 'module')||getSetting('google_plus_login', 'module'))
-
-                    <br>
-
-                    <div class="alert alert-info margintop30">
-
-                      <strong>{{getPhrase('note')}}: </strong>
-
-                      {{getPhrase('social_logins_are_only_for_student_accounts')}}
-
-                    </div>
-
-                    @endif
-
-
-
-                    </div>
-
-        </div>
-
-        <br>
 
                     <ul class="login-links mt-2">
 
                          <ul class="login-links mt-2">
-                               <li> <a href="javascript:void(0);" data-toggle="modal" data-target="#resendVarificationLink" ><i class="icon icon-question"></i> {{getPhrase('verification_link')}}</a></li>
+                               <li> 
+
+                                <a href="{{URL_USERS_REGISTER}}"><i class="icon icon-question"></i> {{getPhrase('register')}}</a>
+
+                              </li>
 
                          <li> <a href="javascript:void(0);" class="pull-left" data-toggle="modal" data-target="#myModal" ><i class="icon icon-question"></i> {{getPhrase('forgot_password')}}</a></li>
 
                       </ul>
 
-
+                    </ul>
 
                     <!-- Form Login/Register -->
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- Login Section -->

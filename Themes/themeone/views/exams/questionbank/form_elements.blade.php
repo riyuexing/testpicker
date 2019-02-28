@@ -214,4 +214,3 @@ $show = TRUE;
 			<button class="btn btn-lg btn-success button">{{ $button_name }}</button>
 		</div>
 		@endif
- 

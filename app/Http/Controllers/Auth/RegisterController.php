@@ -133,23 +133,22 @@ class RegisterController extends Controller
         $password       = $request->password;
         $user->password       = bcrypt($password);
         $user->role_id        = $role_id;
-
         $slug = $user::makeSlug($name);
         $user->slug           = $slug;
         $user->confirmation_code = str_random(30);
-        $user->login_enabled  = 0;
+        $user->login_enabled  = 1;
 
         $user->save();
 
        
         $user->roles()->attach($user->role_id);
 
-        $link = EMAIL_VARIFY.'/'.$user->confirmation_code;
+        // $link = EMAIL_VARIFY.'/'.$user->confirmation_code;
         try 
         {
             if (!env('DEMO_MODE')) {
 
-             $user->notify(new \App\Notifications\NewUserRegistration($user,$user->email,$password,$link));
+             $user->notify(new \App\Notifications\NewUserRegistration($user,$user->email,$password));
             }
 
         }

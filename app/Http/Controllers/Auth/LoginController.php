@@ -33,7 +33,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-   protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
     protected $dbuser = '';
     protected $provider = '';
 
@@ -47,10 +47,6 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);		
     }
 	
-       
-    
-
-
    /**
      * Get a validator for an incoming registration request.
      *
@@ -142,7 +138,6 @@ class LoginController extends Controller
      public function getLogin($layout_type = '')
     {   
          
-
         try{
 
          session()->put("layout_number",$layout_type);
@@ -171,25 +166,22 @@ class LoginController extends Controller
      */
     public function postLogin(Request $request)
     {
-    	// dd($request);
+    	//dd($request);
+
         $rechaptcha_status    = getSetting('enable_rechaptcha','recaptcha_settings');
 
-        if($rechaptcha_status == 'yes'){   
-            
+        if($rechaptcha_status == 'yes'){    
              $columns = array(
-        
             'g-recaptcha-response' => 'required|captcha',
 
             );
-
               $messsages = array(
             'g-recaptcha-response.required'=>'Please Select Captcha',
            
             );
-     
               $this->validate($request,$columns,$messsages);
-
          } 
+         
 
         $username = $request->email;
 
@@ -256,12 +248,8 @@ class LoginController extends Controller
             {  
                 $layout_num  = session()->get('layout_number');
                 // dd($layout_num);
-                return redirect(PREFIX);
+                return redirect(DASHBOARD);
             } 
-        
-         
-
-        
     }
 
 
@@ -269,21 +257,26 @@ class LoginController extends Controller
 
 
      /**
-     * Redirect the user to the GitHub authentication page.
+     * Redirect the user to the social login page.
      *
      * @return Response
      */
     public function redirectToProvider($logintype)
-    {
+    {   
 
         if(!getSetting($logintype.'_login', 'module'))
         {
-            flash('Ooops..!', $logintype.'_login_is_disabled','error');
+            flash('Ooops..!', $logintype.'_login_is_disabled ok','error');
              return redirect(PREFIX);
         }
+
+        if ($logintype == 'google_plus') {
+            $logintype = 'google';
+        }
+
         $this->provider = $logintype;
         return Socialite::driver($this->provider)->redirect();
- 
+
     }
 
      /**
@@ -297,10 +290,11 @@ class LoginController extends Controller
         try{
         $user = Socialite::driver($logintype);
 
+
         
         if(!$user)
         {
-            return redirect(PREFIX);
+            return redirect(LOGIN);
         }
             
         $user = $user->user();
@@ -312,7 +306,7 @@ class LoginController extends Controller
             if($this->checkIsUserAvailable($user)) {
                 Auth::login($this->dbuser, true);
                 flash('Success...!', 'log_in_success', 'success');
-                return redirect(PREFIX);    
+                return redirect(DASHBOARD);    
             }
             flash('Ooops...!', 'faiiled_to_login', 'error');
             return redirect(PREFIX);

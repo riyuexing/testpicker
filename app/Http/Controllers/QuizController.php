@@ -1,20 +1,21 @@
 <?php
 namespace App\Http\Controllers;
-use \App;
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\Quiz;
-use App\Subject;
 use App\QuestionBank;
+use App\Quiz;
 use App\QuizCategory;
-use Yajra\Datatables\Datatables;
-use DB;
+use App\QuizSubCategory;
+use App\Subject;
 use Auth;
+use DB;
 use Exception;
+use File;
+use Illuminate\Http\Request;
 use Image;
 use ImageSettings;
-use File;
+use Yajra\Datatables\Datatables;
+use \App;
+use Illuminate\Support\Facades\Input;
+use Response;
 
 class QuizController extends Controller
 {
@@ -206,11 +207,12 @@ class QuizController extends Controller
       }
 
       $record = Quiz::getRecordWithSlug($slug);
-     $rules = [
+      $rules = [
          'title'               => 'bail|required|max:40' ,
          'dueration'           => 'bail|required|integer' ,
          'pass_percentage'     => 'bail|required|numeric|max:100|min:1' ,
          'category_id'         => 'bail|required|integer' ,
+         'sub_category_id'     => 'bail|required|integer' ,
          'instructions_page_id' => 'bail|required|integer' ,
             ];
    
@@ -240,6 +242,7 @@ class QuizController extends Controller
         }  
       $record->title        = $name;
         $record->category_id    = $request->category_id;
+        $record->sub_category_id    = $request->sub_category_id;
         $record->dueration      = $request->dueration;
         $record->total_marks    = $request->total_marks;
         $record->pass_percentage  = $request->pass_percentage;
@@ -301,7 +304,6 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-
       if(!checkRole(getUserGrade(2)))
       {
         prepareBlockUserMessage();
@@ -313,9 +315,10 @@ class QuizController extends Controller
          'title'               => 'bail|required|max:40' ,
          'dueration'           => 'bail|required|integer' ,
          'category_id'         => 'bail|required|integer' ,
+         'sub_category_id'     => 'bail|required|integer' ,
          'instructions_page_id' => 'bail|required|integer' ,
          'pass_percentage'     => 'bail|required|numeric|max:100|min:1' ,
-          'examimage'                => 'bail|mimes:png,jpg,jpeg|max:2048'
+          'examimage'          => 'bail|mimes:png,jpg,jpeg|max:2048'
             ];
         $this->validate($request, $rules);
           
@@ -337,6 +340,7 @@ class QuizController extends Controller
         $record->title        = $name;
         $record->slug         = $record->makeSlug($name, TRUE);
         $record->category_id    = $request->category_id;
+        $record->sub_category_id    = $request->sub_category_id;
         $record->dueration      = $request->dueration;
         $record->total_marks    = $request->total_marks;
         $record->pass_percentage  = $request->pass_percentage;
@@ -346,7 +350,7 @@ class QuizController extends Controller
         $record->validity       = -1;
         if($record->is_paid) {
           $record->cost         = $request->cost;
-          $record->validity     = $request->validity;
+          $record->validity     = now();
         }
 
         $record->publish_results_immediately            
@@ -460,8 +464,10 @@ class QuizController extends Controller
             ->topics()
             ->where('parent_id', '=', '0')
             ->get(['topic_name', 'id']);
-      $questions = $subject->questions()->get(['id', 'subject_id', 'topic_id', 'question_type', 'question', 
-                                               'marks', 'difficulty_level', 'status']);
+      $questions = $subject->questions()
+      // ->where('if_added','=',0)
+      ->get(['id', 'subject_id', 'topic_id', 'question_type', 'question', 
+                                               'marks', 'difficulty_level', 'status', 'if_added']);
       return json_encode(array('topics'=>$topics, 'questions'=>$questions, 'subject'=>$subject));
     }
     
@@ -477,19 +483,18 @@ class QuizController extends Controller
             prepareBlockUserMessage();
             return back();
         }
-
-   /**
+      /**
        * Get the Quiz Id with the slug
        * Get the available questions from questionbank_quizzes table
        * Load view with this data
        */
-    $record = Quiz::getRecordWithSlug($slug);     
+      $record = Quiz::getRecordWithSlug($slug);     
       $data['record']           = $record;
       $data['active_class']       = 'exams';
         // $data['right_bar']          = FALSE;
         // $data['right_bar_path']     = 'exams.quiz.right-bar-update-questions';
         
-        $data['settings']           = FALSE;
+        $data['settings']   = FALSE;
         $previous_questions = array();
 
         if($record->total_questions > 0)
@@ -497,7 +502,6 @@ class QuizController extends Controller
             $questions = DB::table('questionbank_quizzes')
                             ->where('quize_id', '=', $record->id)
                             ->get();
-            // dd($questions);
             foreach($questions as $question)
             {
                 $temp = array();
@@ -548,7 +552,7 @@ class QuizController extends Controller
                  }
 
                  $index++;
-              }
+              } 
 
               $settings['questions'] = $section_wise_questions;
             }
@@ -557,13 +561,18 @@ class QuizController extends Controller
             $settings['section_data'] = $record->section_data;
             $data['settings']         = json_encode($settings);
         }
-        
-        
+
+
       $data['subjects']     = array_pluck(App\Subject::all(), 'subject_title', 'id');
+
+      $data['topics']       = array_pluck(App\Topic::all(),'topic_name','id');
+
       $data['title']        = getPhrase('update_questions_for').' '.$record->title;
       // dd($data);
 
       // return view('exams.quiz.update-questions', $data);
+
+      // return $data;
 
         $view_name = getTheme().'::exams.quiz.update-questions';
         return view($view_name, $data);
@@ -573,7 +582,6 @@ class QuizController extends Controller
     public function storeQuestions(Request $request, $slug)
     {
        
-       // dd($request);
 
         if(!checkRole(getUserGrade(2)))
         {
@@ -581,8 +589,22 @@ class QuizController extends Controller
             return back();
         }
 
+
+
         $added_sections  = $request->add_section_names;
         $added_times     = $request->add_section_times;
+
+        $save_questions  = json_decode($request->saved_questions);
+        
+        foreach ($save_questions as $question_data) {
+          foreach ($question_data->questions as $question) {
+            $updateBank = QuestionBank::where('id','=',$question->question_id)->first();
+            $count = $updateBank->if_added;
+            $updateBank->if_added = 1 + $count;
+            $updateBank->save();
+          }
+        }
+
 
         DB::beginTransaction();
 
@@ -598,14 +620,15 @@ class QuizController extends Controller
         $sections_data = array();
 
         foreach ($questions as $ques_key => $q) 
+        
         {
-           // dd($q);
+
           if($quiz->exam_type!='NSNT')
           {
             
           foreach($q->questions as $question)
           {
-            // dd($question);
+              
               $temp = array();
               $temp['subject_id']       = $question->subject_id;
               $temp['questionbank_id']  = $question->question_id;
@@ -732,7 +755,7 @@ class QuizController extends Controller
 
     }
 
-     public function processUpload(Request $request, $record, $file_name)
+    public function processUpload(Request $request, $record, $file_name)
      {
          if(env('DEMO_MODE')) {
         return ;
@@ -753,7 +776,7 @@ class QuizController extends Controller
         }
      }
 
-      public function deleteFile($record, $path, $is_array = FALSE)
+    public function deleteFile($record, $path, $is_array = FALSE)
     {
          if(env('DEMO_MODE')) {
         return ;
@@ -764,7 +787,11 @@ class QuizController extends Controller
         File::delete($files);
     }
 
-   
+    public function getSubCategory(){
+      $category_id = Input::get('cat_id');
+      $subCategory = QuizSubCategory::where('category_id','=',$category_id)->get();
+      return Response::json($subCategory);
+    }
 
 
 }

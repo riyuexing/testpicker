@@ -63,38 +63,42 @@
 
 								<span class="text-red">*</span>
 
-								{{Form::select('subject', $subjects, null, ['class'=>'form-control', 'ng-model' => 'subject_id', 
+								{{Form::select('subject', $subjects, null, ['class'=>'form-control', 'ng-model' => 'subject_id', 'placeholder' => 'Select', 'ng-change'=>'subjectChanged(subject_id)' ])}}
 
-								'placeholder' => 'Select', 'ng-change'=>'subjectChanged(subject_id)' ])}}
+							</fieldset>
+
+							<fieldset class="form-group col-md-6">
+								{{ Form::label('Topic', getphrase('topic')) }}
+
+								<span class="text-red">*</span>
+
+								{{Form::select('topic', $topics, null, ['class'=>'form-control', 'ng-model' => 'topic', 'placeholder' => 'Select' ])}}
+							</fieldset>
+
+
+
+
+							<fieldset class="form-group col-md-6">
+
+							{{ Form::label('difficulty', getphrase('difficulty')) }}
+
+							<select ng-model="difficulty" class="form-control" >
+
+							<option value="">{{getPhrase('select')}}</option>	
+
+							<option value="easy">{{getPhrase('easy')}}</option>	
+
+							<option value="medium">{{getPhrase('medium')}}</option>	
+
+							<option value="hard">{{getPhrase('hard')}}</option>	
+
+							</select>
 
 							</fieldset>
 
 
 
-							 
-
-								<fieldset class="form-group col-md-6">
-
-								{{ Form::label('difficulty', getphrase('difficulty')) }}
-
-								
-
-								
-
-								<select ng-model="difficulty" class="form-control" >
-
-								<option value="">{{getPhrase('select')}}</option>	
-
-								<option value="easy">{{getPhrase('easy')}}</option>	
-
-								<option value="medium">{{getPhrase('medium')}}</option>	
-
-								<option value="hard">{{getPhrase('hard')}}</option>	
-
-								</select>
-
-								</fieldset>
-
+							
 
 
 								<fieldset class="form-group col-md-6">
@@ -243,13 +247,14 @@
 									<th>{{getPhrase('type')}}</th>
 
 									<th>{{getPhrase('marks')}}</th>	
+									<th>{{getPhrase('if_added')}}</th>
 
 									<th>{{getPhrase('action')}}</th>	
 
 								
 									<tr ng-repeat="question in subjectQuestions | filter: { difficulty_level:difficulty, question_type:question_type, show_in_front_end:show_in_front_end , topic_id:topic, sub_topic_id:sub_topic } | filter: question_model track by $index ">
 
-										 
+																			 
 
 										<td>@{{subject.subject_title}}</td>
 
@@ -257,27 +262,21 @@
 
 										
 										</td>
-
-										
-
 										<td>@{{question.difficulty_level | uppercase}}</td>
 
 										<td>@{{question.question_type | uppercase}}</td>
 
 										<td>@{{question.marks}}</td>
 
+										<td>@{{question.if_added}}</td>
+
 										<td><a 
 
-										 
 
 										ng-click="addQuestion(question, subject);" class="btn btn-primary" >{{getPhrase('add')}}</a>
 
 									  		
-
 										  </td>
-
-										
-
 									</tr>
 
 								</table>
@@ -308,13 +307,10 @@
 				</div>
 
 			</div>
-
 			<!-- /.container-fluid -->
-
 		</div>
 
 		<!-- /#page-wrapper -->
-
 @stop
 
 @section('footer_scripts')
@@ -323,8 +319,6 @@
 @include('common.alertify')
 
 @stop
-
- 
 
 @section('custom_div_end')
 

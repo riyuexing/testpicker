@@ -146,7 +146,7 @@
 		@endif
 
 		<aside class="left-sidebar">			<div class="collapse navbar-collapse navbar-ex1-collapse">				<ul class="nav navbar-nav side-nav">					<li {{ isActive($active_class, 'dashboard') }}> 
-						<a href="{{PREFIX}}">
+						<a href="{{DASHBOARD}}">
 							<i class="fa fa-fw fa-window-maximize"></i> {{ getPhrase('dashboard') }} 
 						</a> 
 					</li>
@@ -166,6 +166,9 @@
 					
 					<ul id="exams" class="collapse sidemenu-dropdown">
 							<li><a href="{{URL_QUIZ_CATEGORIES}}"> <i class="fa fa-fw fa-fw fa-random"></i>{{ getPhrase('categories') }}</a></li>
+
+							<li><a href="{{URL_QUIZ_SUB_CATEGORIES}}"> <i class="fa fa-fw fa-fw fa-random"></i>{{ getPhrase('sub_categories') }}</a></li>
+
 							<li><a href="{{URL_QUIZ_QUESTIONBANK}}"> <i class="fa fa-fw fa-fw fa-question"></i>{{ getPhrase('question_bank') }}</a></li>
 
 							<li><a href="{{URL_QUIZZES}}"> <i class="icon-total-time"></i> {{ getPhrase('quiz')}}</a></li>

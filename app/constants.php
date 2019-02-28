@@ -11,7 +11,7 @@ $base1 = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http
 define('PREFIX1', $base1.'public/');
 define('BASE_PATH', $base.'/');
 define('PREFIX', $base);
-define('URL_HOME', PREFIX.'home');
+define('URL_HOME', PREFIX);
 
 
 // dd($_SERVER);
@@ -27,6 +27,7 @@ define('FRONT_ASSETS', PREFIX1.'front/');
 
 
 define('UPLOADS', PREFIX1.'uploads/');
+define('EXAM_CATEGORY_PATH', UPLOADS.'/exams/categories/');
 define('EXAM_UPLOADS', UPLOADS.'exams/');
 define('IMAGE_PATH_UPLOAD_SERIES', UPLOADS.'exams/series/');
 define('IMAGE_PATH_UPLOAD_SERIES_THUMB', UPLOADS.'exams/series/thumb/');
@@ -105,6 +106,13 @@ define('URL_QUIZ_CATEGORIES', PREFIX.'exams/categories');
 define('URL_QUIZ_CATEGORY_EDIT', PREFIX.'exams/categories/edit');
 define('URL_QUIZ_CATEGORY_ADD', PREFIX.'exams/categories/add');
 define('URL_QUIZ_CATEGORY_DELETE', PREFIX.'exams/categories/delete/');
+
+
+//QUIZ SUB CATEGORIES
+define('URL_QUIZ_SUB_CATEGORIES', PREFIX.'exams/sub-categories');
+define('URL_QUIZ_SUB_CATEGORY_ADD', PREFIX.'exams/sub-categories/add');
+define('URL_QUIZ_SUB_CATEGORY_EDIT', PREFIX.'exams/sub-categories/edit');
+define('URL_QUIZ_SUB_CATEGORY_DELETE', PREFIX.'exams/sub-categories/delete/');
 
 //QUESTIONSBANK MODULE
 define('URL_QUESTIONBANK_VIEW', PREFIX.'exams/questionbank/view/');
@@ -373,7 +381,7 @@ define('URL_SEND_SMS', PREFIX.'sms/index');
 define('URL_SEND_SMS_NOW', PREFIX.'sms/send');
 
 define('URL_FACEBOOK_LOGIN', PREFIX.'auth/facebook');
-define('URL_GOOGLE_LOGIN', PREFIX.'auth/google');
+define('URL_GOOGLE_LOGIN', PREFIX.'auth/google_plus');
 
 //Site Pages
 define('SITE_PAGES_PRIVACY', PREFIX.'site/privacy-policy');
@@ -436,3 +444,9 @@ define('ONE_YEAR_SUBSCRIPTION', PREFIX.'payments/checkout/subscription/one-year'
 //Email Varify Link
 define('EMAIL_VARIFY', PREFIX.'user/email/activate');
 define('RESEND_VARIFICATION_LINK', PREFIX.'user/resend/verification/link');
+
+//Site Pages
+define('SITE_SUBSCRIPTION_PLAN', PREFIX.'plans');
+
+//User Dashbord
+define('URL_USERS_DASHBOARD', PREFIX.'dashboard');

@@ -46,7 +46,7 @@
 						array('url' => URL_USERS_SETTINGS.$record->slug, 
 						'method'=>'patch','novalidate'=>'','name'=>'formUsers ', 'files'=>'true' )) }}
 					
-					<h1>{{getPhrase('quiz_and_exam_series')}}</h1>
+					<h1>{{getPhrase('exams__and_exam_series')}}</h1>
 
 					<div class="row">
 					@foreach($quiz_categories as $category)

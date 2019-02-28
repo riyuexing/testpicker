@@ -85,7 +85,6 @@
 
 
 					 @include('exams.quiz.form_elements', 
-
 					 array('button_name'=> $button_name),
 
 					 array(	'categories' 		=> $categories,
@@ -94,11 +93,11 @@
 
 					 		'record'			=> $record,
 					 		
-					 		'exam_types'			=> $exam_types
+					 		'exam_types'		=> $exam_types
 
 					 		))
 
-					 		
+					 	
 
 					{!! Form::close() !!}
 
@@ -119,6 +118,7 @@
 @stop
 
 
+	
 
 @section('footer_scripts')
 
@@ -139,6 +139,19 @@
  	   $('.select2').select2({
        placeholder: "Select",
     });
+
+
+
+
+ 	$('#category_id').on('change',function(e){
+ 		var category_id = e.target.value;
+ 		$.get('get-sub-category?cat_id='+category_id, function(data) {
+ 			$('#sub_category_id').empty();
+ 			$.each(data, function(index, value) {
+ 				$('#sub_category_id').append('<option value="'+value.id+'">'+value.sub_category+'</option');
+ 			});
+ 		});
+ 	});
  </script>
 
 @stop

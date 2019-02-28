@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use App\QuizCategory;
+use App\QuizSubCategory;
 use App\Http\Controllers\Controller;
 use \App;
 use \App\UserSubscription;
@@ -28,14 +30,14 @@ class SiteController extends Controller
      $data['home_image']       = getThemeSetting('home_page_image',$current_theme); 
      $data['home_back_image']  = getThemeSetting('home_page_background_image',$current_theme); 
 
-   
+      
 
         $data['key'] = 'home';
         
         $data['active_class'] = 'home';
         $categories           = App\QuizCategory::getShowFrontCategories(8); 
         $data['categories']   = $categories;
-
+        
         if(count($categories) > 0 ){
 
           $firstOne        = $categories[0];
@@ -46,10 +48,16 @@ class SiteController extends Controller
                                  ->get();
 
           $data['quizzes'] = $quizzes;
-          // dd($quizzes);
+          dd($quizzes);
         }
-      
+
+        $cat    =  QuizCategory::all();
+        $subCat =  QuizSubCategory::all();
+
+        $data['cats'] = $cat; 
+        $data['subCats'] = $subCat;    
          $lms_cates  = LmsSeries::getFreeSeries(8);
+
 
          if(count($lms_cates) > 0){
            
@@ -63,10 +71,10 @@ class SiteController extends Controller
             $data['lms_cates']  = $lms_cates;
             $data['lms_series'] = $firstSeries;
          }
-        
 
         $view_name = getTheme().'::site.index';
-        return view($view_name, $data);
+
+         return view($view_name, $data);
 
           }catch (Exception $e) {
 

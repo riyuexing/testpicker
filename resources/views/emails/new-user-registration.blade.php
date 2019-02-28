@@ -18,7 +18,7 @@
 
 
     <br>
-    <p style="font-size:20px;margin:11px 0;"><a href="{{$link}}"> Click here to Activate Account</a></p>
+    <p style="font-size:20px;margin:11px 0;"><a href="{{URL_USERS_LOGIN}}"> Click here to Activate Account</a></p>
   <br><br>
 
 

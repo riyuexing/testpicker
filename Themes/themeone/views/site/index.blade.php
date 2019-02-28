@@ -222,6 +222,45 @@
 
     {{-- End LMS Categories --}}
 
+<!-- Available Course -->
+
+
+
+
+
+
+
+
+<section class="availabe-cource">
+   <h2 class="cs-section-head text-center">{{getPhrase('available_cources')}}</h2>
+
+ 	<div class="container" id="course-card">
+        <div class="row">
+
+            @foreach ($subCats as $subCat)
+                
+            <div class="col-md-3">
+                <div class="card" style="width: 20rem;">
+                    <div class="card-body">
+                        <p class="card-icon">
+                            <img src="{{EXAM_CATEGORY_PATH.$subCat->getCategory->image}}" alt="image" class="card-image">
+                        </p>
+                        <h3 class="text-center font-weight-bold" style="color: #4786ff">{{ $subCat->sub_category }}</h3>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+    </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
         <!-- Info Boxes -->
     <section class="cs-gray-bg">
         <div class="container">

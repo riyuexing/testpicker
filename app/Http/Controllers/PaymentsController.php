@@ -13,6 +13,7 @@ use App\Quiz;
 use App\QuizCategory;
 use App\Subject;
 use App\Subscription;
+use App\UserSubscription;
 use Auth;
 use Carbon;
 use DB;
@@ -813,21 +814,8 @@ class PaymentsController extends Controller
           // dd($is_paid);
           $paid_staus  = in_array('notpurchased', $is_paid);
 
-          if(!$paid_staus){
-              
-              flash('Hey '.$user->name, 'you_already_purchased_this_item', 'overlay');
-              return back();
-          }
-
         }
         
-        if(Payment::isItemPurchased($record->id, $type, $user->id))
-        {
-          //User already purchased this item and it is valid
-          //Return the user to back by the message
-          flash('Hey '.$user->name, 'you_already_purchased_this_item', 'overlay');
-          return back();
-        }
         $active_class = 'subscriptions';
         if($type == 'combo' || $type=='exams'|| $type=='exam')
           $active_class = 'exams';
@@ -1679,6 +1667,11 @@ public function approvePayment(Payment $payment_record,Request $request ,$iscoup
           $user->subscription_ends_at = $new_subscription;
           $user->save();
         }
+
+
+         $userSubscription         = new UserSubscription();
+         $userSubscription->email  = $user->email;
+         $userSubscription->save();
         
 
         $email_template = 'offline_subscription_success';
@@ -1830,11 +1823,13 @@ public function approvePayment(Payment $payment_record,Request $request ,$iscoup
                   $user->save();
               }
 
-
+              $userSubscription         = new UserSubscription();
+              $userSubscription->email  = $user->email;
+              $userSubscription->save();
 
 
             } catch (\Exception $e) {
-// dd($e->getMessage());
+
                 flash('Ooops..!',$e->getMessage(),'overlay');
                 return redirect(URL_PAYMENTS_CHECKOUT.$request->type.'/'.$request->item_name);
             }

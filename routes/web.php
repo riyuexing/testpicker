@@ -1,4 +1,11 @@
+
 <?php
+
+use App\Subscription;
+
+use App\QuizSubCategory;
+use App\Subject;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,18 +28,15 @@ if(env('DB_DATABASE')=='')
    Route::post('/install', 'InstallatationController@installProject');
 }
 
-Route::get('/', function () {
+// Route::get('/', function () {
  
-    if(Auth::check())
-    {
-        return redirect('dashboard');
-    }
-    // dd('here');
-    return redirect(URL_USERS_LOGIN);
-});
-
-
-
+//     if(Auth::check())
+//     {
+//         return redirect('dashboard');
+//     }
+//     // dd('here');
+//     return redirect(URL_USERS_LOGIN);
+// });
 
 if(env('DEMO_MODE')) {
 
@@ -50,18 +54,11 @@ if(env('DEMO_MODE')) {
  Route::post('install/register', 'InstallatationController@registerUser');
  
 
-if(env('DB_DATABASE')==''){
-  Route::get('/', 'SiteController@index');
-}
-  Route::get('home', 'SiteController@index');
-// Route::get('/', function () {
-     
-//     if(Auth::check())
-//     {
-//         return redirect('dashboard');
-//     }
-// 	return redirect(URL_USERS_LOGIN);
-// });
+// if(env('DB_DATABASE')==''){
+//   Route::get('/', 'SiteController@index');
+// }
+
+Route::get('/', 'SiteController@index');
 
 Route::get('dashboard','DashboardController@index');
 Route::get('dashboard/testlang','DashboardController@testLanguage');
@@ -165,8 +162,6 @@ Route::get('children/analysis', 'ParentsController@childrenAnalysis');
                     /////////////////////
                     // Master Settings //
                     /////////////////////
- 
-
 //subjects
 Route::get('mastersettings/subjects', 'SubjectsController@index');
 Route::get('mastersettings/subjects/add', 'SubjectsController@create');
@@ -210,8 +205,7 @@ Route::patch('exams/questionbank/edit/{slug}', 'QuestionBankController@update');
 Route::delete('exams/questionbank/delete/{id}', 'QuestionBankController@delete');
 Route::get('exams/questionbank/getList',  'QuestionBankController@getDatatable');
 
-Route::get('exams/questionbank/getquestionslist/{slug}', 
-     'QuestionBankController@getQuestions');
+Route::get('exams/questionbank/getquestionslist/{slug}','QuestionBankController@getQuestions');
 Route::get('exams/questionbank/import',  'QuestionBankController@import');
 Route::post('exams/questionbank/import',  'QuestionBankController@readExcel');
 
@@ -225,6 +219,18 @@ Route::patch('exams/categories/edit/{slug}', 'QuizCategoryController@update');
 Route::delete('exams/categories/delete/{slug}', 'QuizCategoryController@delete');
 Route::get('exams/categories/getList', [ 'as'   => 'quizcategories.dataTable',
     'uses' => 'QuizCategoryController@getDatatable']);
+
+//Quiz Sub Categories
+Route::get('exams/sub-categories', 'QuizSubCategoryController@index');
+Route::get('exams/sub-categories/add', 'QuizSubCategoryController@create');
+Route::post('exams/sub-categories/add', 'QuizSubCategoryController@store');
+Route::get('exams/sub-categories/edit/{slug}', 'QuizSubCategoryController@edit');
+Route::patch('exams/sub-categories/edit/{slug}', 'QuizSubCategoryController@update');
+Route::delete('exams/sub-categories/delete/{slug}', 'QuizSubCategoryController@delete');
+Route::get('exams/sub-categories/getList', [ 'as'   => 'quizsubcategories.dataTable',
+    'uses' => 'QuizSubCategoryController@getDatatable']);
+
+
 
 // Quiz Student Categories 
 Route::get('exams/student/categories', 'StudentQuizController@index');
@@ -255,16 +261,21 @@ Route::get('student/exam/answers/{quiz_slug}/{result_slug}', 'ReportsController@
 Route::get('exams/quizzes', 'QuizController@index');
 Route::get('exams/quiz/add', 'QuizController@create');
 Route::post('exams/quiz/add', 'QuizController@store');
+
+
+Route::get('exams/quiz/edit/get-sub-category','QuizController@getSubCategory');
+
+
 Route::get('exams/quiz/edit/{slug}', 'QuizController@edit');
 Route::patch('exams/quiz/edit/{slug}', 'QuizController@update');
 Route::delete('exams/quiz/delete/{slug}', 'QuizController@delete');
 Route::get('exams/quiz/getList/{slug?}', 'QuizController@getDatatable');
-
 Route::get('exams/quiz/update-questions/{slug}', 'QuizController@updateQuestions');
 Route::post('exams/quiz/update-questions/{slug}', 'QuizController@storeQuestions');
 
-
 Route::post('exams/quiz/get-questions', 'QuizController@getSubjectData');
+Route::get('exams/quiz/get-sub-category','QuizController@getSubCategory');
+
 
 //Certificates controller
 Route::get('result/generate-certificate/{slug}', 'CertificatesController@getCertificate');
@@ -481,8 +492,6 @@ Route::post('coupons/update-questions/{slug}', 'CouponcodesController@storeQuest
 Route::post('coupons/validate-coupon', 'CouponcodesController@validateCoupon');
 
 
-
-
 //Feedback Module
 Route::get('feedback/list', 'FeedbackController@index');
 Route::get('feedback/view-details/{slug}', 'FeedbackController@details');
@@ -516,6 +525,8 @@ Route::group(['prefix' => 'messages'], function () {
 
 
 Route::get('site/{slug?}', 'SiteController@sitePages');
+Route::get('site/pricing','SiteController@pricePage');
+  
 // privacy-policy
 
 
@@ -591,3 +602,34 @@ Route::post('user/resend/verification/link', 'VarificationController@resendVerif
 Route::get('user/phone/verify', 'VarificationController@SendOtp')->name('verify.phone');
 Route::get('user/phone/change','VarificationController@changePhone')->name('change.phone');
 Route::post('user/otp/verify','VarificationController@verifyOtp')->name('verify.otp');
+
+//Site Custome Pages
+Route::get('plans',function(){
+
+      $view_name = getTheme().'::site.price_page';
+      $data['active_class']  = "contact-us";
+      $data['title']  = getPhrase('subscription_plan');
+      $subscription_plan = Subscription::all();
+      $data['subscriptions'] = $subscription_plan;
+      return view($view_name,$data);
+});
+
+
+
+Route::get('test',function(){
+      $subject_id = 29;
+      $subject = Subject::where('id','=',$subject_id)->first();
+      
+      $topics = $subject
+            ->topics()
+            ->where('parent_id', '=', '0')
+            ->get(['topic_name', 'id']);
+      
+      $questions = $subject->questions()
+      ->where('id','=',25)
+      ->get(['id', 'subject_id', 'topic_id', 'question_type', 'question', 
+                                               'marks', 'difficulty_level', 'status','if_added']);
+
+      return json_encode(array('topics'=>$topics, 'questions'=>$questions, 'subject'=>$subject));
+
+ });

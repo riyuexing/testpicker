@@ -247,7 +247,7 @@ if(isset($block_navigation))
 
 					<li {{ isActive($active_class, 'dashboard') }}> 
 
-						<a href="{{PREFIX}}">
+						<a href="{{DASHBOARD}}">
 
 							<i class="fa fa-fw fa-window-maximize"></i>  {{ getPhrase('dashboard') }} 
 

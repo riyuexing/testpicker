@@ -25,12 +25,20 @@
 						
 						{{ Form::label('category_id', getphrase('category')) }}
 						<span class="text-red">*</span>
-						{{Form::select('category_id', $categories, null, ['class'=>'form-control'])}}
-						
+						{{Form::select('category_id', $categories, null, ['class'=>'form-control','id'=>'category_id', 'placeholder' => 'Select'])}}
+					
 					</fieldset>
 
   
 				    </div>
+				   <div class="row">
+				   		<fieldset class="form-group col-md-6">
+						
+						{{ Form::label('sub_category_id', getphrase('sub_category')) }}
+						<span class="text-red">*</span>
+						{{Form::select('sub_category_id', ['' => 'Select'], 'S', ['class'=>'form-control','id'=>'sub_category_id'])}}				
+					</fieldset>
+				   </div>
 
 				<div class="row">
 	  				 <fieldset class="form-group col-md-6">

@@ -20,14 +20,12 @@ class NewUserRegistration extends Notification
     protected $user = null;
     protected $email = null;
     protected $password = null;
-    protected $link     = null;
 
-    public function __construct(User $user, $email, $password, $link)
+    public function __construct(User $user, $email, $password)
     {
         $this->user = $user;
         $this->email = $email;
         $this->password = $password;
-        $this->link = $link;
     }
 
     /**
@@ -56,7 +54,7 @@ class NewUserRegistration extends Notification
 
 
         return (new MailMessage)->view(
-        'emails.new-user-registration', ['user_name' => $this->user->getUserTitle(), 'email'=>$this->email,'password'=>$this->password, 'link'=>$this->link]
+        'emails.new-user-registration', ['user_name' => $this->user->getUserTitle(), 'email'=>$this->email,'password'=>$this->password]
                 );      
 
 
